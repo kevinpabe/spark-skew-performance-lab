@@ -1,0 +1,35 @@
+{
+  "description": "Modelo ilustrativo com sete tabelas; nomes e relações originais não foram fornecidos.",
+  "tables": [
+    {
+      "name": "findings",
+      "grain": "finding_id por competência"
+    },
+    {
+      "name": "assets",
+      "grain": "asset_id por vigência"
+    },
+    {
+      "name": "vulnerabilities",
+      "grain": "vulnerability_id"
+    },
+    {
+      "name": "scans",
+      "grain": "scan_id"
+    },
+    {
+      "name": "controls",
+      "grain": "control_id"
+    },
+    {
+      "name": "ownership",
+      "grain": "asset_id por vigência"
+    },
+    {
+      "name": "exceptions",
+      "grain": "exception_id"
+    }
+  ],
+  "implemented_join": "findings.asset_id -> assets.asset_id, many-to-one",
+  "warning": "Chaves temporais e granularidade devem ser definidas antes de combinar as sete tabelas."
+}
