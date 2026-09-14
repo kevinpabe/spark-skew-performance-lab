@@ -29,11 +29,11 @@ def join(facts, dimension, mode="baseline", salt_buckets=8):
     if mode not in ("baseline", "aqe", "salt", "broadcast"):
         raise ValueError("Modo desconhecido")
     if mode == "salt":
-        if salt_buckets < 1:
+        if type(salt_buckets) is not int or salt_buckets < 1:
             raise ValueError("salt_buckets deve ser positivo")
         left = facts.withColumn(
             "_salt", F.when(F.col("asset_id") == 0,
-                           F.pmod(F.xxhash64("finding_id"), F.lit(salt_buckets)))
+                           F.expr("pmod(xxhash64(finding_id), " + str(salt_buckets) + ")"))
             .otherwise(F.lit(0)).cast("int"))
         right = dimension.withColumn(
             "_salt", F.explode(F.when(F.col("asset_id") == 0,

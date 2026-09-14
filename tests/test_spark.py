@@ -22,12 +22,11 @@ class SparkTest(unittest.TestCase):
         baseline = join(facts, dimension)
         rows = baseline.collect()  # Apenas 400 linhas; não usar collect em produção.
         self.assertEqual(len(rows), 400)
-        reference = self.spark.createDataFrame(rows, baseline.schema)
         for mode in ("aqe", "salt", "broadcast"):
             configure(self.spark, mode)
             candidate = join(facts, dimension, mode=mode)
-            self.assertEqual(reference.exceptAll(candidate).count(), 0, mode)
-            self.assertEqual(candidate.exceptAll(reference).count(), 0, mode)
+            # Compara o multiconjunto completo da fixture, incluindo duplicidades.
+            self.assertCountEqual(rows, candidate.collect(), mode)
 
     def test_duplicate_dimension_is_rejected_before_join(self):
         _, dimension = generate(self.spark, rows=20, assets=4)
